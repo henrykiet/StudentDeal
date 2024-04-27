@@ -1,0 +1,24 @@
+﻿@model IEnumerable<WebBanHangOnline.Models.EF.Category>
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/main_styles.css">
+
+@if (Model != null && Model.Any())
+{
+
+
+    <ul id="navbar1">
+        @foreach (var item in Model)
+        {
+
+            <li><a href="/@item.Alias">@item.Title</a></li>
+
+        }
+
+    </ul>
+
+
+}
+<style>
+    .selected-link {
+        text-decoration: underline;
+    }
+</style>

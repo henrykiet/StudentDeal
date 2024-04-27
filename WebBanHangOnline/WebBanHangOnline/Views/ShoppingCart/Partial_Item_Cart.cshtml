@@ -1,0 +1,85 @@
+﻿
+@model IEnumerable<WebBanHangOnline.Models.ShoppingCartItem>
+@using WebBanHangOnline.Common
+<div style="font-size:20px;">
+    <table class="table">
+        <tr class="text-center">
+            <th style="text-align:center;">STT</th>
+            <th style="text-align:center;">Ảnh sản phẩm</th>
+            <th style="text-align:center;">Tên sản phẩm</th>
+            <th style="text-align:center;">Danh mục</th>
+            <th style="text-align:center;">Xu</th>
+
+            <th style="text-align:center;">Thành tiền</th>
+            <th style="width:50px;">
+
+            </th>
+        </tr>
+        @if (Model != null && Model.Any())
+        {
+            var i = 0;
+            var tongtien = (float)0;
+            foreach (var item in Model)
+            {
+                tongtien += item.TotalPrice;
+                <tr class="text-center" id="trow_@item.ProductId">
+                    <td style="text-align: center;">@(i+1)</td>
+                    <td style="text-align:center;"><img src="@item.ProductImg" style="width:100px; height:100px;" /></td>
+                    <td style="text-align:center; font-weight:800;">
+                        <a href="/Products/Detail/@(item.ProductId)">
+                            @item.ProductName
+                        </a>
+                    </td>
+                    <td style="text-align:center;">@item.CategoryName</td>
+                    <td style="text-align:center;">@Common.FormatNumber(item.Price, 0)</td>
+                    <th style="text-align:center;">@Common.FormatNumber(item.TotalPrice, 2)</th>
+                    <td style="text-align:center;">
+                        <a href="#" data-id="@item.ProductId" class="btn btn-sm btn-danger btnDelete">Xóa</a>
+                    </td>
+                </tr>
+ i++;
+            }
+            <tr>
+                <th colspan="6" class="text-right">Tổng: </th>
+                <th class="text-center" style="text-align:center;">@Common.FormatNumber(tongtien, 0) </th>
+                <th> <i class="fa-solid fa-coins"></i> </th>
+            </tr>
+ }
+        else
+        {
+            <tr>
+                <th colspan="7">Không có sản phẩm trong giỏ hàng!!</th>
+            </tr>
+}
+    </table>
+    @section scripts{
+        <script src="~/Content/assets/js/categories_custom.js"></script>
+        <script>
+            // Xử lý sự kiện nhấn nút Xóa
+            $(".btnDelete").click(function () {
+                var productId = $(this).data("id");
+                $.ajax({
+                    type: "POST",
+                    url: "/ShoppingCart/Delete",
+                    data: { id: productId },
+                    success: function (data) {
+                        if (data.Success) {
+                            // Cập nhật lại giỏ hàng trong trang
+                            $("#load_data").load("/ShoppingCart/Partial_Item_Cart");
+                            // Cập nhật số lượng sản phẩm trong giỏ hàng
+                            $("#cart_count").text(data.Count);
+                            alert(data.msg);
+                        }
+                    },
+                    error: function () {
+                        alert("Đã xảy ra lỗi khi xóa sản phẩm khỏi giỏ hàng.");
+                    }
+                });
+            });
+        </script>
+    }
+
+</div>
+
+
+

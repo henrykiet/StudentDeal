@@ -1,0 +1,442 @@
+﻿
+@using WebBanHangOnline.Models.EF
+@model WebBanHangOnline.Models.ProductViewModel
+@{
+    ViewBag.Title = "Home Page";
+    var img = "";
+    double t = 0;
+}
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/main_styles.css">
+<!-- Slider -->
+@*<div class="main_slider" style="background-image:url(Content/assets/images/slider_1.jpg)">
+        <div class="container fill_height">
+            <div class="row align-items-center fill_height">
+                <div class="col">
+                    <div class="main_slider_content">
+                        <h6>Spring / Summer Collection 2017</h6>
+                        <h1>Get up to 30% Off New Arrivals</h1>
+                        <div class="red_button shop_now_button"><a href="#">shop now</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+<!-- Slider PROMO -->
+<section class="promo-all">
+    <div class="container ">
+
+        <div id="myCarousel" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                <li data-target="#myCarousel" data-slide-to="1"></li>
+                <li data-target="#myCarousel" data-slide-to="2"></li>
+            </ol>
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner ">
+
+                <div class="item active ">
+                    <img src="~/image/promo/promo1.png" alt="Los Angeles" style="width:100%;">
+
+                </div>
+
+                <div class="item">
+                    <img src="~/image/promo/promo2.png" alt="Chicago" style="width:100%;">
+
+                </div>
+
+                <div class="item">
+                    <img src="~/image/promo/promo3.png" alt="New York" style="width:100%;">
+
+                </div>
+
+            </div>
+
+            <!-- Left and right controls -->
+            <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- Product -->
+<section id="product-all">
+    <div class="product">
+
+        @Html.Action("MenuProductCategory", "Menu")
+        <!-- Container -->
+        <div class="pro-container">
+            <!-- SP1  -->
+            @foreach (var item in Model.Products)
+            {
+                var alias = Model.productCategorys.FirstOrDefault(c => c.Id == item.ProductCategoryId).Alias.Replace(" ", "");
+                <div class="pro @alias">
+                    <div class="pro_img">
+                        @if (item.Image == null)
+                        {
+                            img = "https://statics.vincom.com.vn/uu-dai/Highlands-coffee.jpg";
+                        }
+                        else
+                        {
+                            img = item.Image;
+                        }
+                        <img class="pro_img" src="@img" />
+                    </div>
+                    <div class="des">
+                        <p>@Model.productCategorys.FirstOrDefault(c => c.Id == item.ProductCategoryId).Title</p>
+                        <p>
+                            <i class="fa-solid fa-clock" style="font-size:17px; color:  orange;"></i>
+                            @item.StartDate.ToString("dd/MM/yyyy") - @item.endDate.ToString("dd/MM/yyyy")
+                        </p>
+
+
+                        <a href="/Products/Detail/@item.Id" style="text-decoration: none; width: 250px; overflow: hidden; text-overflow: ellipsis; line-height: 80px; -webkit-line-clamp: 2; height: 50px; display: -webkit-box; -webkit-box-orient: vertical; margin-bottom:40px; ">
+                            <h4>@item.Title</h4>
+                        </a>
+                        @{
+                            t = ((item.TotalQuantity - item.Quantity) * 100.0) / item.TotalQuantity;
+                        }
+                        <div class="progress">
+
+                            <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="70"
+                                 aria-valuemin="0" aria-valuemax="100" style="width:@t%">
+                                <i class="fa-solid fa-fire"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            }
+        </div>
+    </div>
+    <a href="#" class="pro-more" id="product-more">Find out More</button></a>
+    <style>
+        .pro-container .pro {
+            display: none;
+        }
+
+        .pro-container.show-more .pro {
+            display: block;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            var productsToShow = 12; // Number of additional product rows to show when the button is clicked
+            var currentIndex = 4; // Index of the last visible product row
+            var initialShow = 0; // Number of products to show initially
+
+            // Function to show the next set of products
+            function showMoreProducts() {
+                var $products = $(".pro-container .pro");
+                var totalProducts = $products.length;
+
+                // Calculate the next index to show
+                var nextIndex = currentIndex + productsToShow;
+                nextIndex = Math.min(nextIndex, totalProducts);
+
+                // Show the next set of products
+                $products.slice(currentIndex, nextIndex).fadeIn();
+
+                // Update the current index
+                currentIndex = nextIndex;
+
+                // Hide the button if all products are shown
+                if (currentIndex >= totalProducts) {
+                    $("#product-more").hide();
+                }
+            }
+
+            // Initially, show the first set of products
+            showMoreProducts();
+
+            // Handle button click to show more products
+            $("#product-more").click(function (e) {
+                e.preventDefault();
+                $(".pro-container").addClass("show-more");
+                showMoreProducts();
+            });
+        });
+    </script>
+</section>
+
+
+<!-- Best Sellers -->
+@*@Html.Action("Partial_ProductSales", "Products")*@
+
+
+<!-- Top product - scrollbar  -->
+<section class="scrollbar-all">
+    <div>
+        <!-- Detail -->
+        <h1 class="product-detail">Top Voucher</h1>
+    </div>
+    <div class="wrapper">
+        <!-- <i id="left" class="fa-solid fa-angle-left"></i> -->
+        <ul class="scrollbar">
+
+            <!-- SP1  -->
+            @if (Model.TopVouchers != null)
+            {
+                foreach (var item in Model.TopVouchers)
+                {
+                    <div class="pro">
+                        <div class="pro_img">
+                            @if (item.Image == null)
+                            {
+                                img = "https://statics.vincom.com.vn/uu-dai/Highlands-coffee.jpg";
+                            }
+                            else
+                            {
+                                img = item.Image;
+                            }
+                            <img class="pro_img" src="@img" />
+                        </div>
+                        <div class="des">
+                            <p>@Model.productCategorys.FirstOrDefault(c => c.Id == item.ProductCategoryId).Title</p>
+                            <p>
+                                <i class="fa-solid fa-clock" style="font-size:17px; color:  orange;"></i>
+                                @item.StartDate.ToString("dd/MM/yyyy") - @item.endDate.ToString("dd/MM/yyyy")
+                            </p>
+
+                            <a href="/Products/Detail/@item.Id" style="text-decoration: none; width: 250px; overflow: hidden; text-overflow: ellipsis; line-height: 80px; -webkit-line-clamp: 2; height: 50px; display: -webkit-box; -webkit-box-orient: vertical; margin-bottom:40px; ">
+                                <h4>@item.Title</h4>
+                            </a>
+                            <div class="progress">
+                                @{
+                                    t = ((item.TotalQuantity - item.Quantity) * 100.0) / item.TotalQuantity;
+                                }
+                                <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="70"
+                                     aria-valuemin="0" aria-valuemax="100" style="width:@t%">
+                                    <i class="fa-solid fa-fire"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+            }
+
+        </ul>
+        <!-- <i id="right" class="fa-solid fa-angle-right"></i>   -->
+    </div>
+
+    <!-- Blogs -->
+    @Html.Action("Partial_News_Home", "News")
+
+</section>
+<!-- Benefit -->
+@*<div class="benefit">
+        <div class="container">
+            <div class="row benefit_row">
+                <div class="col-lg-3 benefit_col">
+                    <div class="benefit_item d-flex flex-row align-items-center">
+                        <div class="benefit_icon"><i class="fa fa-truck" aria-hidden="true"></i></div>
+                        <div class="benefit_content">
+                            <h6>free shipping</h6>
+                            <p>Suffered Alteration in Some Form</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 benefit_col">
+                    <div class="benefit_item d-flex flex-row align-items-center">
+                        <div class="benefit_icon"><i class="fa fa-money" aria-hidden="true"></i></div>
+                        <div class="benefit_content">
+                            <h6>cach on delivery</h6>
+                            <p>The Internet Tend To Repeat</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 benefit_col">
+                    <div class="benefit_item d-flex flex-row align-items-center">
+                        <div class="benefit_icon"><i class="fa fa-undo" aria-hidden="true"></i></div>
+                        <div class="benefit_content">
+                            <h6>45 days return</h6>
+                            <p>Making it Look Like Readable</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 benefit_col">
+                    <div class="benefit_item d-flex flex-row align-items-center">
+                        <div class="benefit_icon"><i class="fa fa-clock-o" aria-hidden="true"></i></div>
+                        <div class="benefit_content">
+                            <h6>opening all week</h6>
+                            <p>8AM - 09PM</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+
+<!-- Story about Student Deal  -->
+<section class="story-all" id="aboutus">
+    <div class="story">
+        <div class="imgStory"><img src="index/img/story/story.png"></div>
+        <article class="description-all">
+            <div class="description-all-detail">Câu chuyện về </br>Student Deal</div>
+            <div class="description">
+                Student Deal là nơi cung cấp các khoản giảm giá đặc biệt dành cho sinh viên.
+                Chúng tôi có nhiều loại voucher và ưu đãi cho các mặt hàng và dịch vụ khác nhau, từ điện thoại di
+                động đến thực phẩm. Với Student Deal, bạn có thể tiết kiệm tiền một cách đơn giản và dễ dàng. Tìm
+                kiếm các ưu đãi của chúng tôi để giúp cuộc sống sinh viên của bạn trở nên dễ dàng hơn.
+            </div>
+        </article>
+    </div>
+</section>
+
+
+
+
+
+
+<!-- Partners -->
+<section class="partner">
+    <div class="partner-detail">Các đối tác của chúng tôi</div>
+    <div class="partner-img">
+        <img src="index/img/partner/bhd.png">
+        <img src="index/img/partner/coolmate.png">
+        <img src="index/img/partner/gongcha.png">
+        <img src="index/img/partner/hotpot.png">
+        <img src="index/img/partner/ticketbox.png">
+        <img src="index/img/partner/travelloka.png">
+    </div>
+</section>
+
+
+<!-- FeedBack -->
+
+
+<div class="feedback-all">
+
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+            <li data-target="#myCarousel" data-slide-to="2"></li>
+        </ol>
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+
+            <div class="item active">
+                <div class="feedback">
+                    <img src="index/img/feedback/Phuong.jpg">
+                    <article class="feedback-description">
+                        <div class="feedback-detail"> Đánh giá của sinh viên</div>
+                        <div class="feedback-desc">
+                            I am very happy with the services provided, it is very helpful,
+                            starting
+                            from the insight that the company gave from the start that I did not
+                            understand what it was so I got knowledge and made my website
+                            look better
+                        </div>
+                        <div class="feedback-name">Anna Saraspova</div>
+                        <div class="feedback-crear">Sinh viên đại học FPT</div>
+                    </article>
+                </div>
+
+            </div>
+
+            <div class="item">
+                <div class="feedback">
+                    <img src="index/img/feedback/Khoi.jpg">
+                    <article class="feedback-description">
+                        <div class="feedback-detail"> Đánh giá của sinh viên</div>
+                        <div class="feedback-desc">
+                            I am very happy with the services provided, it is very helpful,
+                            starting
+                            from the insight that the company gave from the start that I did not
+                            understand what it was so I got knowledge and made my website
+                            look better
+                        </div>
+                        <div class="feedback-name">Anna Saraspova</div>
+                        <div class="feedback-crear">Sinh viên đại học FPT</div>
+                    </article>
+                </div>
+
+            </div>
+
+            <div class="item">
+                <div class="feedback">
+                    <img src="index/img/feedback/Khiem.jpg">
+                    <article class="feedback-description">
+                        <div class="feedback-detail"> Đánh giá của sinh viên</div>
+                        <div class="feedback-desc">
+                            I am very happy with the services provided, it is very helpful,
+                            starting
+                            from the insight that the company gave from the start that I did not
+                            understand what it was so I got knowledge and made my website
+                            look better
+                        </div>
+                        <div class="feedback-name">Anna Saraspova</div>
+                        <div class="feedback-crear">Sinh viên đại học FPT</div>
+                    </article>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Left and right controls -->
+        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div>
+<script src="~/js/filter.js"></script>
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/main_styles.css">
+<!-- import icon font awesome -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+<!-- Import thư viện JQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    // kéo xuống khoảng cách 500px thì xuất hiện nút Top-up
+    var offset = 500;
+    // thời gian di trượt 0.75s ( 1000 = 1s )
+    var duration = 750;
+    $(function () {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > offset)
+                $('#top-up').fadeIn(duration); else
+                $('#top-up').fadeOut(duration);
+        });
+        $('#top-up').click(function () {
+            $('body,html').animate({ scrollTop: 0 }, duration);
+        });
+    });
+</script>
+<style>
+    #top-up {
+        font-size: 3rem;
+        cursor: pointer;
+        position: fixed;
+        z-index: 9999;
+        color: orangered;
+        bottom: 20px;
+        right: 15px;
+        display: none;
+    }
+
+        #top-up:hover {
+            color: #333
+        }
+</style>
+<div title="Về đầu trang" id="top-up">
+    <i class="fas fa-arrow-circle-up"></i>
+</div>

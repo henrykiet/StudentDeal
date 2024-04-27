@@ -1,0 +1,384 @@
+﻿@model WebBanHangOnline.Models.EF.Product
+@using Microsoft.AspNet.Identity
+@using Microsoft.AspNet.Identity.EntityFramework
+@{
+    ViewBag.Title = "Detail";
+    var currentuser = User.Identity.GetUserId();
+}
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/single_styles.css">
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/single_responsive.css">
+@if (Model != null)
+{
+    <!-- font google: roboto - regular -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+    <!-- icon  -->
+    <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+    @*<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">*@
+
+    <!-- Lien kết css  -->
+    <link rel="stylesheet" href="~/css/DetailProduct.css">
+
+
+
+    <div class="container ml-5 ">
+        <div class="wrapper">
+            <div class="imageContainer">
+                <img src="../img/product/Highlands-coffee.jpg" class="image">
+                <div>
+                    <h3 class="guide" style="font-weight: bolder;">Cách sử dụng Voucher</h3>
+
+                    <p class="desc">Bước 1: Chọn voucher trên website Student Deal.</p>
+                    <p class="desc">Bước 2: Nhấn nút “Nhận mã ngay” để nhận voucher trực tiếp hoặc Nhấn nút "Thêm vào giỏ hàng" để bỏ vào giỏ.</p>
+                    <p class="desc">Bước 3: Sau khi nhận mã và thanh toán bằng xu thành công, bạn sẽ nhận Mã Voucher qua mail.</p>
+                    <p class="desc">Bước 5: Xuất trình mã code của voucher tại cửa hàng được ủy quyền để sử dụng ưu đãi. </p>
+                    <p class="desc"><i class="fa-solid fa-lightbulb"></i> Note: Bạn muốn xem các Voucher đã đặt của mình hãy vào Icon User >> Ví Voucher để theo các Voucher của mình.  </p>
+
+                </div>
+
+                <!-- Hiển thị form nhập đánh giá và rating -->
+                <h1>Feedback:</h1>
+                <div class="feedback-container">
+                    <div class="input-feedback">
+                        <div class="avatar">
+                            <!-- Hiển thị ảnh đại diện của người dùng -->
+                            <!-- Điền đường dẫn ảnh avata thích hợp vào src -->
+                            <img src="path_to_avatar.jpg" alt="Avatar">
+                        </div>
+                        <div class="feedback-details">
+                            <!-- Hiển thị tên người dùng đã đăng nhập -->
+                            <p class="name-feed">@User.Identity.Name</p>
+                            <!-- Hiển thị rating sao -->
+                            <div class="rating" data-rating="0">
+                                <span class="star">&#9733;</span>
+                                <span class="star">&#9733;</span>
+                                <span class="star">&#9733;</span>
+                                <span class="star">&#9733;</span>
+                                <span class="star">&#9733;</span>
+                            </div>
+                            <!-- Input ẩn để lưu giá trị rating -->
+                            <div class="input-rating">
+                                <input type="hidden" id="ratingValue" min="1" max="5" placeholder="Enter your rating">
+                            </div>
+                            <!-- Input để nhập nội dung đánh giá -->
+                            <div class="output-comment">
+                                <textarea id="comment" placeholder="Enter your comment"></textarea>
+                                <!-- Nút "Feedback" để gửi đánh giá -->
+                                <button onclick="submitFeedback()">Feedback</button>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="comments">
+                        <ul id="commentList">
+                            <!-- Danh sách các comment sẽ được hiển thị ở đây -->
+                        </ul>
+                    </div>
+                </div>
+                <script>
+    // Thêm sự kiện cho việc thay đổi rating
+    const ratingElement = document.querySelector('.rating');
+    const stars = ratingElement.querySelectorAll('.star');
+
+    let initialRating = ratingElement.dataset.rating;
+    if (initialRating) {
+        initialRating = parseInt(initialRating);
+        setRating(initialRating);
+    }
+
+    stars.forEach((star, index) => {
+        star.addEventListener('click', () => {
+            const ratingValue = index + 1;
+            setRating(ratingValue);
+        });
+    });
+
+    function setRating(ratingValue) {
+        for (let i = 0; i < stars.length; i++) {
+            if (i < ratingValue) {
+                stars[i].classList.add('checked');
+            } else {
+                stars[i].classList.remove('checked');
+            }
+        }
+        ratingElement.dataset.rating = ratingValue; // Thêm dòng này để cập nhật thuộc tính data-rating
+        document.getElementById('ratingValue').value = ratingValue;
+    }
+
+    function submitFeedback() {
+        const ratingValue = document.querySelectorAll('.star.checked').length;
+        const comment = document.getElementById("comment").value;
+
+        // Kiểm tra rating và comment có hợp lệ
+        if (ratingValue <= 0 || comment.trim() === "") {
+            alert("Vui lòng nhập đủ thông tin đánh giá!");
+            return;
+        }
+
+        // Gửi đánh giá lên server thông qua AJAX
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("AddReview", "Products")",
+            data: { productId: @Model.Id, rating: ratingValue, commentContent: comment },
+            success: function (data) {
+                if (data.success) {
+                    // Hiển thị thông báo khi gửi đánh giá thành công
+                    alert("Cảm ơn quý khách đã nhận xét!");
+                    // Thêm đánh giá vào danh sách đánh giá đã gửi
+                    addNewReviewToUI(data.message, ratingValue, comment);
+                    // Reset form nhập đánh giá
+                    document.getElementById("comment").value = "";
+                    setRating(0);
+                } else {
+                    // Hiển thị thông báo khi gửi đánh giá không thành công
+                    alert("Gửi đánh giá thất bại!Bạn cần đăng nhập");
+                }
+            },
+            error: function () {
+                alert("Có lỗi xảy ra khi gửi đánh giá!");
+            }
+        });
+    }
+
+    function addNewReviewToUI(username, rating, comment) {
+        const currentDate = new Date().toLocaleDateString();
+        // Tạo một đối tượng HTML mới để hiển thị đánh giá
+        const listItem = document.createElement("li");
+        listItem.classList.add("comment-item");
+        listItem.innerHTML = `
+            <div class="avatar">
+                <img src="path_to_avatar.jpg" alt="Avatar">
+            </div>
+            <div class="comment-info">
+                <div class="info-feed">
+                    <p class="name-feed">${username}</p>
+                    <div class="date">Date: ${currentDate}</div>
+                </div>
+                <div class="rating">
+                    ${getCheckedStarsHtml(rating)}
+                </div>
+                <div class="comment-text">${comment}</div>
+            </div>
+        `;
+
+        // Thêm đánh giá mới vào danh sách đánh giá đã gửi
+        document.getElementById("commentList").appendChild(listItem);
+    }
+
+    function getCheckedStarsHtml(ratingValue) {
+        let starsHtml = '';
+        for (let i = 0; i < 5; i++) {
+            if (i < ratingValue) {
+                starsHtml += '<span class="star checked">&#9733;</span>';
+            } else {
+                starsHtml += '<span class="star">&#9733;</span>';
+            }
+        }
+        return starsHtml;
+    }
+                </script>
+                <!--<h1>Feedback:</h1>
+    <div class="feedback-container">
+
+        <div class="input-feedback">
+            <div class="avatar">-->
+                <!-- Thay thế đường dẫn sau bằng đường dẫn ảnh của avata -->
+                <!--<img src="path_to_avatar.jpg" alt="Avatar">
+        </div>
+        <div class="feedback-details">
+            <div class="info-feed">
+                <p class="name-feed">Vũ Thị Bích Phương</p>
+                <div class="date">Date: <span id="date">July 25, 2023</span></div>
+            </div>
+
+
+            <div class="rating" data-rating="0">
+                <span class="star">&#9733;</span>
+                <span class="star">&#9733;</span>
+                <span class="star">&#9733;</span>
+                <span class="star">&#9733;</span>
+                <span class="star">&#9733;</span>
+            </div>
+
+
+
+            <div class="input-rating">
+                <input type="hidden" id="ratingValue" min="1" max="5" placeholder="Enter your rating">
+            </div>
+            <div class="output-comment">
+                <textarea id="comment" placeholder="Enter your comment"></textarea>
+                <button onclick="submitFeedback()">Feedback</button>
+            </div>
+            <hr>
+        </div>
+
+    </div>
+    <div class="comments">
+        <ul id="commentList">-->
+                <!-- Danh sách các comment sẽ được hiển thị ở đây -->
+                <!--</ul>
+        </div>
+
+    </div>
+
+    <script>
+        // Thêm sự kiện cho việc thay đổi rating
+        const ratingElement = document.querySelector('.rating');
+        const stars = ratingElement.querySelectorAll('.star');
+
+        let initialRating = ratingElement.dataset.rating;
+        if (initialRating) {
+            initialRating = parseInt(initialRating);
+            setRating(initialRating);
+        }
+
+        stars.forEach((star, index) => {
+            star.addEventListener('click', () => {
+                const ratingValue = index + 1;
+                setRating(ratingValue);
+            });
+        });
+
+
+        function setRating(ratingValue) {
+            for (let i = 0; i < stars.length; i++) {
+                if (i < ratingValue) {
+                    stars[i].classList.add('checked');
+                } else {
+                    stars[i].classList.remove('checked');
+                }
+            }
+            ratingElement.dataset.rating = ratingValue; // Thêm dòng này để cập nhật thuộc tính data-rating
+            document.getElementById('ratingValue').value = ratingValue;
+        }
+        function submitFeedback() {
+            const ratingValue = document.querySelectorAll('.star.checked').length;
+            const comment = document.getElementById("comment").value;
+            const dateElement = document.getElementById("date");
+            const currentDate = new Date().toLocaleDateString();
+            dateElement.textContent = currentDate;
+
+            // Create a new comment element
+            const listItem = document.createElement("li");
+            listItem.classList.add("comment-item");
+            listItem.innerHTML = `
+                                            <div class="avatar">
+                                                <img src="path_to_avatar.jpg" alt="Avatar">
+                                            </div>
+                                            <div class="comment-info">
+                                                <div class="info-feed">
+                                                    <p class="name-feed">Vũ Thị Bích Phương</p>
+                                                    <div class="date">Date: ${currentDate}</div>
+                                                </div>
+                                                <div class="rating">
+                                                    ${getCheckedStarsHtml(ratingValue)}
+                                                </div>
+                                                <div class="comment-text">${comment}</div>
+                                            </div>
+                                        `;
+
+            // Add the new comment element to the comment list
+            document.getElementById("commentList").appendChild(listItem);
+
+            // Reset the input fields
+            document.getElementById("comment").value = "";
+            setRating(0);
+        }
+
+
+        function getCheckedStarsHtml(ratingValue) {
+            let starsHtml = '';
+            for (let i = 0; i < 5; i++) {
+                if (i < ratingValue) {
+                    starsHtml += '<span class="star checked">&#9733;</span>';
+                } else {
+                    starsHtml += '<span class="star">&#9733;</span>';
+                }
+            }
+            return starsHtml;
+        }
+
+    </script>-->
+
+
+
+
+            </div>
+
+            <div class="infoContainer">
+                <h1 class="title">@Model.Title</h1>
+                <p><i class="fa-solid fa-eye"></i> @Model.ViewCount Lượt xem  </p>
+
+                <p class="desc">
+                    @Model.Description
+                </p>
+                <i class="fa-solid fa-clock" style="color: #f99b43;"></i> @Model.StartDate.ToString("dd/MM/yyyy") - @Model.endDate.ToString("dd/MM/yyyy") <br /> <br />
+
+                <span class="price">
+                    <i class="fa-solid fa-coins" style="color: #ffc800;"></i> @((int)Model.Price) Xu
+                </span>
+
+                @*<div class="addContainer">
+
+                    </div>*@
+            <div class="addContainer">
+                <form method="post" action="/ShoppingCart/TakeProduct/@Model.Id" style="margin-right: 20px;">
+                    <button type="submit" class="pro_btn">Nhận mã ngay</button>
+                </form>
+                @if (currentuser != null)
+                {
+                    <form method="post" @*action="/ShoppingCart/AddToCart/@Model.Id?quantity=1"*@>
+                        <button type="button" class="pro_btn" onclick="addToCart(@Model.Id, 1)">Thêm vào giỏ hàng</button>
+                    </form>
+                }
+
+            </div>
+
+                <br /> <br />
+
+                <h3 class="condition" style="font-weight: bolder;">Chi tiết: </h3>
+
+                <p>@Html.Raw(Model.Detail)</p>
+
+            </div>
+        </div>
+    </div>
+
+
+}
+@*@section scripts{
+        <script src="~/Content/assets/js/single_custom.js"></script>
+    }*@
+@section scripts {
+    <script>
+        // Function to add the item to the cart using AJAX
+        function addToCart(productId, quantity) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("AddToCart", "ShoppingCart")",
+                data: { id: productId, quantity: quantity },
+                success: function (data) {
+                    if (data.Success) {
+                        // Show a notification message (you can use a library like toastr.js)
+                        alert(data.msg);
+                        // Update the cart icon with the new total count
+                        updateCartCount(data.Count);
+                    } else {
+                        // Handle the error case (if any)
+                        alert("Thêm sản phẩm vào giỏ hàng thất bại!");
+                    }
+                },
+                error: function () {
+                    alert("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!");
+                }
+            });
+        }
+
+        // Function to update the cart count in the header
+        function updateCartCount(count) {
+            $(".cart-count").text(count);
+        }
+    </script>
+}

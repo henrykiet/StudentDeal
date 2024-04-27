@@ -1,0 +1,87 @@
+﻿@model IEnumerable<WebBanHangOnline.Models.EF.News>
+@{
+    var controllerName = ViewContext.Controller.GetType().Name;
+    var img = "";
+}
+<link rel="stylesheet" href="~/css/news.css" />
+@if (Model != null && Model.Any())
+{
+
+    <div class="blogs">
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <div class="section_title">
+                        <h2 style=" color: #F3692E; font-weight: 600;">News & Blogs</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="news-sub">
+                    <div class="scroll-news-container">
+                        <div class="scroll-news">
+                            @foreach (var item in Model)
+                            {
+                                    <!-- news 1 -->
+                                    <div class="news-child">
+                                        <img src="~/image/promo/promo3.png" />
+                                        <div class="content-news">
+                                            <p class="date">@item.CreatedDate.ToString("dd/MM/yyyy")</p>
+                                            <a href="/News/Detail/@item.Id" class="detail-new-child">
+                                                <div class="text-overflow">
+                                                    <p>
+                                                        @item.Title
+                                                    </p>
+                                                </div>
+                                            </a>
+                                            <div>
+                                                <p class="desc-news-child">
+                                                    @item.Description
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                            }
+                        </div>
+                    </div>
+                
+            </div>
+            @*<div class="row blogs_container">
+                @foreach (var item in Model)
+                {
+                    <a class="blog_more" href="@Url.Action("Detail", new { controller = controllerName.Replace("Controller", ""), id = item.Id })">
+                        <div class="col-lg-4 blog_item_col">
+                            <div class="blog_item">
+                                <div class="blog_background" style="background-image:url(@item.Image)"></div>
+                                <div class="blog_content d-flex flex-column align-items-center justify-content-center text-center">
+                                    <h4 class="blog_title">@item.Title</h4>
+                                    @if (item.Image == null)
+                                    {
+                                        img = "";
+                                    }
+                                    else
+                                    {
+                                        img = item.Image;
+                                    }
+                                    <img class="pro_img" src="@img" />
+                                    <span>@item.Description</span><br />
+                                    @if (item.CreatedBy == null || item.CreatedBy.Equals(""))
+                                    {
+                                        <span class="blog_meta">@item.CreatedDate.ToString("MMM dd,yyyy")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="blog_meta">Create by @item.CreatedBy || @item.CreatedDate.ToString("MMM dd,yyyy")</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                }
+
+
+            </div>*@
+        </div>
+    </div>
+
+}

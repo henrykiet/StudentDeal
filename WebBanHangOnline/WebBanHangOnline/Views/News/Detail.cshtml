@@ -1,0 +1,63 @@
+﻿@model WebBanHangOnline.Models.EF.News
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Description News</title>
+    <link rel="stylesheet" href="~/css/news.css">
+
+    <!-- icon  -->
+    <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="blog">
+        <div class="hero" style="background: url(@Model.Image) no-repeat center center / cover">
+
+        </div>
+
+        <main>
+            <h2>@Model.Title</h2>
+            <div class="profile-container">
+                <div class="profile">
+                    <div class="img-container" style="background: url(@Model.Image) no-repeat center center / cover">
+
+                    </div>
+
+                    <div class="text">
+                        <h3>@Model.CreatedBy</h3>
+                        <p>Thời gian: @Model.CreatedDate.ToString("dd/MM/yyyy")</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="content">
+                <p>
+                    @Model.Description
+                </p>
+
+                <div class="content-img-container" style="background: url(@Model.Image) no-repeat center center / cover">
+
+                </div>
+                <p style="white-space: pre-wrap;">
+                    @Html.Raw(Model.Detail)
+                </p>
+
+            </div>  
+            <div class="tags">
+                @*<p>tags:@Model.ProductCategoryId</p>*@
+            </div>
+        </main>
+    </div>
+
+    <a href="/News" style="text-align:center; align-items:center;"> <button class="backBtn" >Quay lại </button></a>
+
+</body>
+
+</html>

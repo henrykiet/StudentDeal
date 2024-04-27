@@ -1,0 +1,176 @@
+﻿@model WebBanHangOnline.Models.ProfileViewModel
+
+@{
+    ViewBag.Title = "Profile";
+}
+
+
+<!-- font google: roboto - regular -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+<!-- icon  -->
+<script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<!-- Lien kết css  -->
+<link rel="stylesheet" href="~/css/userInfor.css">
+
+<!-- Lien kết Bosstrap  -->
+<link rel="stylesheet" href="~/css/Bootrap.css">
+<link rel="stylesheet" href="~/css/Bootrap2.css">
+<link rel="stylesheet" href="~/Content/bootstrap.css">
+
+<section class="pt-2 pb-3 mt-0 ">
+    <div class=" mb-0" style="margin-left:110px;margin-right:110px;">
+
+        <div class="bg-white shadow rounded-lg d-block d-sm-flex mt-5 mb-5" style="height:auto; ">
+            <div class="profile-tab-nav border-right">
+                <div class="p-4">
+                    <div class="img-circle text-center mb-3">
+                        <img src="~/image/feedback/feedback1.png" alt="" class="shadow" />
+                    </div>
+                    <h4 class="text-center" style="font-size:20px;">
+                        @Model.FullName
+                    </h4>
+                </div>
+
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link" id="account-tab" data-toggle="pill" href="#account" role="tab"
+                       aria-controls="account" aria-selected="true">
+                        <i class="fa fa-user text-center mr-1"></i>
+                        Tài khoản của tôi
+                    </a>
+
+                    <a class="nav-link" id="password-tab" data-toggle="pill" href="#password" role="tab"
+                       aria-controls="password" aria-selected="false">
+                        <i class="fa fa-key text-center mr-1"></i>
+                        Đổi mật khẩu
+                    </a>
+                </div>
+            </div>
+
+            <div class="tab-content p-4 p-md-5" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
+                    @*profile*@
+                    @using (Html.BeginForm("UpdateProfile", "Account", FormMethod.Post, new { role = "form" }))
+                    {
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Tên đăng nhập </label>
+                                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.UserName)
+                                    @if (TempData["error"] != null)
+                                    {
+                                        @TempData["error"]
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Họ và tên </label>
+                                    @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.FullName)
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @readonly = "readonly" })
+                                    @Html.ValidationMessageFor(m => m.Email)
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Số điện thoại</label>
+                                    @Html.TextBoxFor(m => m.Phone, new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="gender">Giới tính</label>
+                                    @Html.DropDownListFor(m => m.Gender, new SelectList(new[]
+                                    {
+                                        new { Value = false, Text = "Female" },
+                                        new { Value = true, Text = "Male" }
+                                    }, "Value", "Text"), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <button type="submit"
+                                    style=" color: #f1c952; background: #F3692E; border: none; width:10%; padding:5px; font-weight: 600;">
+                                Update
+                            </button>
+                        </div>
+                    }
+
+                </div>
+
+                @*change password*@
+
+                <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
+                    @using (Html.BeginForm("UpdatePassword", "Account", FormMethod.Post, new { role = "form" }))
+                    {
+                        @Html.HiddenFor(m => m.UserName)
+                        @Html.HiddenFor(m => m.Email)
+                        @Html.HiddenFor(m => m.FullName)
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Mật khẩu cũ</label>
+                                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Mật khẩu mới</label>
+                                    @Html.PasswordFor(m => m.NewPassword, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.NewPassword, "", new { @class = "text-danger" })
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Xác nhận lại mật khẩu mới </label>
+                                    @Html.PasswordFor(m => m.RePassword, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.RePassword, "", new { @class = "text-danger" })
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <button type="submit"
+                                    style=" color: #f1c952; background: #F3692E; border: none; width:10%; padding:5px; font-weight: 600;">
+                                Update
+                            </button>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>

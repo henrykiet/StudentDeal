@@ -1,0 +1,108 @@
+﻿@using Microsoft.AspNet.Identity
+@using Microsoft.AspNet.Identity.EntityFramework
+
+@model IEnumerable<WebBanHangOnline.Models.ApplicationUser>
+@{
+    ViewBag.Title = "Quản lý tài khoản";
+}
+
+@section naviheader{
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/admin" class="nav-link">Trang chủ</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/admin" class="nav-link">@ViewBag.Title</a>
+        </li>
+    </ul>
+}
+<!-- Main content -->
+<section class="content">
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Danh sách tài khoản</h3>
+
+            <div class="card-tools">
+                <a href="/admin/account/create" class="btn btn-success">Thêm mới</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tài khoản</th>
+                        <th>Họ tên</th>
+                        <th>Email</th>
+                        <th>Active</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        var i = 1;
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>@item.UserName</td>
+                                <td>@item.FullName</td>
+                                <td>@item.Email</td>
+                                @if (item.IsActive == true)
+                                {
+                                    <td style="color: red; font-weight: bold;">Active</td>
+                                }
+                                else
+                                {
+                                    <td style="font-weight: bold;">Un Active</td>
+                                }
+                                <td>
+                                    <div class="btn-group">
+                                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-primary btn-edit" })
+                                        @using (Html.BeginForm("Delete", "Account", new { id = item.Id }, FormMethod.Post))
+                                        {
+                                            @Html.AntiForgeryToken() <!-- Thêm thẻ token vào biểu mẫu -->
+                                            <input type="submit" value="Delete" class="btn btn-danger btn-delete" onclick="return confirm('Are you sure you want to delete this user?');" />
+                                        }
+                                    </div>
+                                </td>
+
+                            </tr>
+                            i++;
+                        }
+
+                    }
+                </tbody>
+            </table>
+        </div>
+        <style>
+            /* Định dạng các nút trong cùng một nhóm */
+            .btn-group {
+                display: inline-block;
+            }
+
+                /* Định dạng các nút bên trong btn-group */
+                .btn-group .btn {
+                    margin-right: 5px; /* Đặt khoảng cách giữa các nút */
+                    width: 80px; /* Đặt độ rộng mong muốn của các nút */
+                }
+        </style>
+
+
+        <!-- /.card-body -->
+        <div class="card-footer">
+
+        </div>
+        <!-- /.card-footer-->
+    </div>
+    <!-- /.card -->
+
+</section>
+<!-- /.content -->

@@ -1,0 +1,339 @@
+﻿@using WebBanHangOnline.Common
+
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Colo Shop</title>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="~/image/logo/logo1.png" type="index/img/logo/x-icon">
+    <title>Trang chủ - Student Deal</title>
+
+    <!-- font google: roboto - regular -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+    <!-- icon  -->
+    <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Lien kết css  -->
+    <link rel="stylesheet" href="~/css/style.css">
+    <script src="~/js/script.js"></script>
+
+    @*@RenderSection("css", required: false)*@
+    <!--<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/responsive.css">-->
+    @*@Styles.Render("~/Content/css")*@
+    <!--@Scripts.Render("~/bundles/modernizr")
+    <script src="~/Content/assets/js/jquery-3.2.1.min.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")-->
+    <!-- Thêm link cho progess bar -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <!-- Link boostrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    @Styles.Render("~/Content/css")
+    <link href="~/Content/toastr.css" rel="stylesheet" />
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+
+
+
+<body style="padding:0; margin:0;">
+    <div class="super_container">
+        <!-- header  -->
+        <div class="header-all" style=" overflow: visible;">
+
+            <!-- Logo -->
+            <div class="header">
+                <div id="header">
+                    <a class="logo" href="/Home/Index">
+                        <img src="~/image/logo/logo2.png" class="logo-img" alt="">
+                        <p>STUDENT DEAL</p>
+                    </a>
+                    <div>
+                        <ul id="navbar">
+                            <li><a href="#aboutus">Về Chúng Tôi</a></li>
+
+                            <li>
+                                <div>
+                                    @if (!Request.IsAuthenticated)
+                                    {
+                                            <button id="button" type="button" data-toggle="dropdown">
+                                                        Đăng Nhập
+                                                         <span class="caret"></span>
+                                             </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/account/login"><i class="fa fa-sign-in" aria-hidden="true"></i> Đăng Nhập</a></li>
+                                            <li>
+                                                <a id="register-link" href="/account/login?register=true" onclick="switchForm('register')">
+                                                    <i class="fa fa-user-plus" aria-hidden="true"></i> Đăng Ký
+                                                </a>
+                                            </li>
+                                        </ul> }
+                                    else
+                                    {
+                        <div>
+                            <p style="padding-top: 10px;">
+                                Welcome: @Session["name"]
+                            </p>
+                        </div>}
+                                </div>
+                            </li>
+                            @if (Request.IsAuthenticated)
+                            {
+                                using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { @id = "logOffForm" }))
+                                {
+                @Html.AntiForgeryToken()}
+        }
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div id="header1" style=" overflow: visible;">
+
+                @Html.Action("MenuTop", "Menu")
+
+                <!-- Search bar -->
+                <form class="navbar-form navbar-left" action="@Url.Action("Search", "Products")" method="get">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="search">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" type="submit">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                @if (!Request.IsAuthenticated)
+                {
+
+                }
+                else
+                {
+    <div style=" overflow: visible;">
+        <ul id="navbar2" style=" overflow: visible;">
+            <li class="lap">
+                <!-- Update the cart link to point to the ShoppingCart/Index action -->
+                <a href="@Url.Action("Index", "ShoppingCart")">
+                    <i class="fa fa-regular fa-tag"></i>
+                    <!-- Use a span with a class to display the cart count -->
+                    <span class="badge cart-count" style="position: absolute;bottom: 1px;background: orangered;"></span>
+                </a>
+            </li>
+            <!-- <li id="mobile"><a href="cart.html"><i class="fa fa-regular fa-tag"></i></a></li> -->
+            <li class="dropdown">
+                <a type="button" data-toggle="dropdown" href="#">
+                    <i class="fa fa-regular fa-user"></i>
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                    <li><a href="@Url.Action("Profile", "Account")">Tài khoản của tôi</a></li>
+                    <li><a href="@Url.Action("Index", "Order")">Ví voucher</a></li>
+                    <li>
+                        <a>
+                            Hiện có <strong style="color: #f1c952;">
+                                @Session["walletpoint"] <i class="fa-solid fa-coins"></i>
+                            </strong>
+                        </a>
+                    </li>
+                    <li><a href="javascript:document.getElementById('logOffForm').submit()"><i class="fa fa-user-plus" aria-hidden="true"></i> Logout</a></li>
+                </ul>
+            </li>
+            <!-- <li class="lap"><a href="inforUser.html"><i class="fa fa-regular fa-user"></i></a></li> -->
+            <li style="overflow: visible;">
+                <a type="button" data-toggle="dropdown" href="#">
+                    <i class="fa-solid fa-bell"></i><span class="badge"
+                                                          style="position: absolute; bottom: 1px; background: #fca32f;  ">3</span>
+                </a>
+                <ul class="dropdown-menu pull-right custom-dropdown-menu">
+                    <!-- Added the custom-dropdown-menu class -->
+                    <li>
+                        <p>18:20 19/07/2023</p>
+                        <p>
+                            Bạn Đã sử dụng voucher Mua 2 tính tiền 1 tại Highlands-coffee. Hãy đánh giá để nhận
+                            thêm xu nhé!
+                        </p>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <p>18:20 19/07/2023</p>
+                        <p>Bạn có thêm 20 xu vì đã sử dụng voucher!</p>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <p>18:20 19/07/2023</p>
+                        <p>Voucher Mua 2 tính tiền 1 tại Highlands-coffee sắp hết hạn!</p>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>}
+
+
+                <div class="mobile">
+                    <i class="fas fa-outdent"></i>
+                </div>
+            </div>
+            @*body*@
+            @RenderBody()
+
+            <!-- Footer  -->
+            <footer id="lienhe">
+                <div class="footer">
+                    <div class="col">
+                        <img class="footer-logo" src="~/image/logo/logo2.png" alt="">
+                        <h4>Liên hệ chúng tôi</h4>
+                        <p><strong>Số điện thoại:</strong> 028 7300 5588 </p>
+                        <p>
+                            <strong>Địa chỉ:</strong> Lô E2a-7, Đường D1, Đ. D1, Long Thạnh Mỹ,
+                            </br> Thành Phố Thủ Đức, Thành phố Hồ Chí Minh 700000
+                        </p>
+                        <p><strong>Thời gian:</strong> 8AM - 5PM </p>
+                        <div class="follow">
+                            <h4>Theo dõi chúng tôi qua</h4>
+                            <div class="icon">
+                                <a href="#"><i class="fa fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fa fab fa-instagram"></i></a>
+                                <a href="#"><i class="fa fab fa-youtube"></i></a>
+                                <a href="#"><i class="fa fab fa-twitter"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <h4>Về Student Deal</h4>
+                        <a href="#">Giới thiệu về Student Deal</a>
+                        <a href="#">Các nhà cung cấp</a>
+                        <a href="#">Liên hệ truyền thông</a>
+                        <a href="#">Liên hệ liên kết</a>
+                    </div>
+
+                    <div class="col">
+                        <h4>Tài khoản của tôi</h4><a href="#">Đăng Nhập</a>
+                        <a href="#">Voucher của tôi</a>
+                        <a href="#">Thông tin tài khoản</a>
+                        <a href="#">Trợ giúp</a>
+                    </div>
+
+                    <div class="col install">
+                        <h4>Tải ứng dụng Student Deal</h4>
+                        <div class="app">
+                            <img src="~/image/QR/app.png">
+                            <div class="app-kind">
+                                <h5><i class="fa-brands fa-apple"></i> App Store</h5>
+                                <h5><i class="fa-brands fa-google-play"></i> Google Play</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+
+
+        @*@Scripts.Render("~/bundles/jquery")*@
+
+        <style>
+            /* Custom CSS for the dropdown menu */
+            .custom-dropdown-menu {
+                min-width: 300px;
+                /* Set your desired width here */
+            }
+        </style>
+        <script src="~/Content/assets/styles/bootstrap4/popper.js"></script>
+        <script src="~/Content/assets/styles/bootstrap4/bootstrap.min.js"></script>
+        <script src="~/Content/assets/plugins/Isotope/isotope.pkgd.min.js"></script>
+        <script src="~/Content/assets/plugins/OwlCarousel2-2.2.1/owl.carousel.js"></script>
+        <script src="~/Content/assets/plugins/easing/easing.js"></script>
+        <script src="~/Content/assets/plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+        <script src="~/Content/assets/js/custom.js"></script>
+        <script src="~/Scripts/jquery.validate.min.js"></script>
+        <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+        <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+
+        @*@Scripts.Render("~/bundles/bootstrap")*@
+        <script src="~/Scripts/jsShopping.js"></script>
+
+        <script src="~/Scripts/toastr.js"></script>
+        <script>
+        // Function to show toastr messages
+        function showToastr(message, type) {
+            toastr.options = {
+                "positionClass": "toast-top-right",
+                "timeOut": 5000,
+                "progressBar": true
+            };
+            toastr[type](message);
+        }
+
+        // Call showToastr function when the page loads
+        $(document).ready(function () {
+            // Show success toastr
+            @if (TempData["suc"] != null)
+            {
+                <text>showToastr('@TempData["suc"]', 'success');</text>
+            }
+
+            // Show error toastr
+            @if (TempData["error"] != null)
+            {
+                <text>showToastr('@TempData["error"]', 'error');</text>
+            }
+
+            // Show info toastr
+            @if (TempData["info"] != null)
+            {
+                <text>showToastr('@TempData["info"]', 'info');</text>
+            }
+
+            // Show warning toastr
+            @if (TempData["war"] != null)
+            {
+                <text>showToastr('@TempData["war"]', 'warning');</text>
+            }
+        });
+        </script>
+
+
+        @RenderSection("scripts", required: false)
+</body>
+</html>
+@section scripts {
+    <script>
+        // Function to update the cart count in the header
+        function updateCartCount(count) {
+            $(".cart-count").text(count);
+        }// Function to get the cart count using AJAX
+        function getCartCount() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ShowCount", "ShoppingCart")",
+                success: function (data) {
+                    if (data && data.Count) {
+                        updateCartCount(data.Count);
+                    }
+                },
+                error: function () {
+                    console.log("Error occurred while fetching cart count.");
+                }
+            });
+        }
+
+        // Call getCartCount function when the page loads
+        $(document).ready(function () {
+            getCartCount();
+        });
+    </script>
+
+}

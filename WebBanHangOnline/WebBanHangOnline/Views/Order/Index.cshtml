@@ -1,0 +1,160 @@
+﻿@model List<WebBanHangOnline.Models.UserOrderViewModel>
+@{
+    DateTime currentDate = DateTime.Now;
+    var img = "";
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Ví Voucher</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="~/css/viVoucher.css">
+
+</head>
+
+<body>
+
+
+    <div class="tab-cart">
+        <h1 style="text-align: center;color: rgb(237, 143, 100);text-transform: uppercase;font-weight: bold;font-family: Roboto, sans-serif;">
+            Ví Voucher
+        </h1>
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#home">Voucher của tôi</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#menu2">Voucher đã hết hạn</a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div id="home" class="container tab-pane active" style="margin: auto;">
+                <br>
+                <div class="cart">
+                    <div id="cart-items">
+                        @foreach (var item in Model)
+                        {
+                            foreach (var odDertail in item.OrderDetails)
+                            {
+                                var product = odDertail.Product;
+                                var endDate = product.endDate;
+
+                                if (endDate >= currentDate)
+                                {
+                                    <div id="cartItem">
+                                        <div id="cart-img">
+                                            @if (product.Image == null)
+                                            {
+                                                img = "https://statics.vincom.com.vn/uu-dai/Highlands-coffee.jpg";
+                                            }
+                                            else
+                                            {
+                                                img = product.Image;
+                                            }
+                                            <img src="@img" alt="Product" />
+                                        </div>
+                                        <div id="cart-des">
+                                            <p id="cart-detail">@product.Title</p>
+                                            <p id="cart-date">
+                                                Date: @product.StartDate.ToString("dd/MM/yyyy")-@endDate.ToString("dd/MM/yyyy")
+                                            </p>
+                                            <div class="vi-xuvabtn">
+                                                <div id="cart-xu">
+                                                    <p> <i class="fa-solid fa-coins"></i> <strong>@product.Price</strong></p>
+                                                </div>
+                                                <ul id="cart-bth">
+                                                    @using (Html.BeginForm("Recode", "Order", FormMethod.Post))
+                                                    {
+                                                        @Html.Hidden("id", item.Order.OrderId)
+                                                        <button type="submit">
+                                                            GỬI LẠI MÃ
+                                                        </button>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div id="menu2" class="container tab-pane fade" style="margin: auto;">
+                <br>
+                <div class="cart">
+                    <div id="cart-items">
+                        @foreach (var item in Model)
+                        {
+                            foreach (var odDertail in item.OrderDetails)
+                            {
+                                var product = odDertail.Product;
+                                var endDate = product.endDate;
+
+                                if (endDate <= currentDate)
+                                {
+                                    <div id="cartItem">
+                                        <div id="cart-img">
+                                            @if (product.Image == null)
+                                            {
+                                                img = "https://statics.vincom.com.vn/uu-dai/Highlands-coffee.jpg";
+                                            }
+                                            else
+                                            {
+                                                img = product.Image;
+                                            }
+                                            <img src="@img" alt="Product" />
+                                        </div>
+                                        <div id="cart-des">
+                                            <p id="cart-detail">@product.Title</p>
+                                            <p id="cart-date">
+                                                Date: @product.StartDate.ToString("dd/MM/yyyy")-@endDate.ToString("dd/MM/yyyy")
+                                            </p>
+                                            <div class="vi-xuvabtn">
+                                                <div id="cart-xu">
+                                                    <p> <i class="fa-solid fa-coins"></i> <strong>@product.Price</strong></p>
+                                                </div>
+                                                <p id="cart-bth-used">
+                                                    <button>
+                                                        ĐÃ HẾT HẠN
+                                                    </button>
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Tạo hiệu ứng chuyển tab khi click vào tab "Voucher đã hết hạn"
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                var target = $(e.target).attr("href"); // Lấy href của tab đã click
+                if (target === "#menu2") {
+                    // Cuộn trang đến tab "Voucher đã hết hạn"
+                    $('html, body').animate({
+                        scrollTop: $("#menu2").offset().top
+                    }, 1000);
+                }
+            });
+        });
+    </script>
+}
+

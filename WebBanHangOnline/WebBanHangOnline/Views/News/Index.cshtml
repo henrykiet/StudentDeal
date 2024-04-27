@@ -1,0 +1,112 @@
+﻿@using WebBanHangOnline.Models
+@model WebBanHangOnline.Models.NewsProductCateViewModel
+@{
+    var count = 0;
+}
+
+<link rel="stylesheet" href="~/css/news.css">
+<link rel="stylesheet" href="~/css/style.css">
+<!-- font google: roboto - regular -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+<h1 style="text-align: center; color: rgb(237, 143, 100); font-style: italic; text-transform: uppercase; font-weight: bold; font-family: Arial, sans-serif; ">
+    News and Blogs
+</h1>
+<section class="news-all">
+
+    <div class="news">
+        @foreach (var top in Model.Top3)
+        {
+            <div class="news-main">
+
+                @if (count == 0)
+                {
+                    <div class="main-big">
+                        <img src="~/image/promo/promo1.png" />
+                        <a href="/News/Detail/@top.Id" class="detail-news-big">
+                            <p class="detail-news-main-big">
+                                @top.Title
+                            </p>
+                        </a>
+                    </div>
+                    count++;
+                }
+                else if (count == 1)
+                {
+
+
+                    <div class="main-small1">
+                        <img src="~/image/promo/promo2.png" />
+                        <a class="detail-news-small1" href="/News/Detail/@top.Id">
+                            <p class="detail-news-main-small">
+                                @top.Title
+                            </p>
+                        </a>
+                    </div>
+                    count++;
+
+                }
+                else if (count == 2)
+                {
+                    <div class="main-small2">
+                        <img src="~/image/promo/promo2.png" />
+                        <a class="detail-news-small2" href="/News/Detail/@top.Id">
+                            <p class="detail-news-main-small">
+                                @top.Title
+                            </p>
+                        </a>
+                    </div>
+
+                }
+
+            </div>
+
+
+
+        }
+        <!-- ------------------------------------------------ -->
+        <div class="news-sub">
+            @foreach (var productCate in Model.ProductCategory)
+            {
+                <div class="scroll-news-container">
+                    @if (productCate.Products != null)
+                    {
+                    <h2 class="title-cate">@productCate.Title</h2>
+                    }
+
+                    <div class="scroll-news">
+                        @foreach (var item in Model.News)
+                        {
+                            if (productCate.Id == item.ProductCategoryId)
+                            {
+                                <!-- news 1 -->
+                                <div class="news-child">
+                                    <img src="~/image/promo/promo3.png" />
+                                    <div class="content-news">
+                                        <p class="date">@item.CreatedDate.ToString("dd/MM/yyyy")</p>
+                                        <a href="/News/Detail/@item.Id" class="detail-new-child">
+                                            <div class="text-overflow">
+                                                <p>
+                                                    @item.Title
+                                                </p>
+                                            </div>
+                                        </a>
+                                        <div>
+                                            <p class="desc-news-child">
+                                                @item.Description
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+    </div>
+</section>

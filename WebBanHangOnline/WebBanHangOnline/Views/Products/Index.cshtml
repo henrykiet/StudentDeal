@@ -1,0 +1,91 @@
+﻿@model WebBanHangOnline.Models.ProductViewModel
+
+@{
+    ViewBag.Title = "Danh sách sản phẩm";
+    var img = "";
+    double t = 0;
+}
+@*<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_styles.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_responsive.css">*@
+<div class="container product_section_container">
+    <div class="row">
+        <div class="col product_section clearfix" style="margin-top: 40px;">
+
+            <section id="product-all">
+                <div class="product">
+                    @Html.Action("MenuProductCategory", "Menu")
+
+                    <div class="pro-container">
+                        <!-- SP1  -->
+                        @if (Model.Products != null)
+                        {
+                            foreach (var item in Model.Products)
+                            {
+                                if (item.IsActive == true)
+                                {
+                                    var alias = string.Empty;
+                                    var category = Model.productCategorys.FirstOrDefault(c => c.Id == item.ProductCategoryId);
+                                    if (Model.productCategorys != null)
+                                    {
+                                        if (category != null)
+                                        {
+                                            alias = category.Alias.Replace(" ", "");
+                                        }
+                                    }
+
+                                    <div class="pro @alias">
+                                        <div class="pro_img">
+                                            @if (item.Image == null)
+                                            {
+                                                img = "https://statics.vincom.com.vn/uu-dai/Highlands-coffee.jpg";
+                                            }
+                                            else
+                                            {
+                                                img = item.Image;
+                                            }
+                                            <img class="pro_img" src="@img" />
+                                        </div>
+                                        <div class="des">
+                                            <p>@(category?.Title)</p>
+                                            <p>
+                                                <i class="fa-solid fa-clock" style="font-size:17px; color:  orange;"></i>
+                                                @item.StartDate.ToString("dd/MM/yyyy") - @item.endDate.ToString("dd/MM/yyyy")
+                                            </p>
+
+
+                                            <a href="/Products/Detail/@item.Id" style="text-decoration: none; width: 250px; overflow: hidden; text-overflow: ellipsis; line-height: 80px; -webkit-line-clamp: 2; height: 50px; display: -webkit-box; -webkit-box-orient: vertical; margin-bottom:40px; ">
+                                                <h4>@item.Title</h4>
+                                            </a>
+                                            @{
+                                                t = ((item.TotalQuantity - item.Quantity) * 100.0) / item.TotalQuantity;
+                                            }
+                                            <div class="progress">
+
+                                                <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="70"
+                                                     aria-valuemin="0" aria-valuemax="100" style="width:@t%">
+                                                    <i class="fa-solid fa-fire"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                }
+                                else
+                                {
+                                    <h3>Không có sản phẩm nào!</h3>
+                                }
+
+                            }
+                        }
+
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Content/assets/js/categories_custom.js"></script>
+    @*<script src="~/js/filter.js"></script>*@
+}

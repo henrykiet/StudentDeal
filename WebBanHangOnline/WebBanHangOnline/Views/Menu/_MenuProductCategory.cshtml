@@ -1,0 +1,25 @@
+﻿@model IEnumerable<WebBanHangOnline.Models.EF.ProductCategory>
+
+
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/main_styles.css">
+
+
+@if (Model != null && Model.Any())
+{
+    <!-- Detail -->
+    <h1 class="product-detail">Our Voucher Collection</h1>
+
+    <!-- Navbar -->
+    <ul class="nav-list">
+        <li><a class="btn" data-filter="all">Tất cả</a></li>
+        @foreach (var item in Model)
+        {
+            var alias = item.Alias.Replace(" ", "");
+            <li><a class="btn" data-filter="@alias">@item.Title</a></li>
+        }
+
+    </ul>
+
+
+
+}

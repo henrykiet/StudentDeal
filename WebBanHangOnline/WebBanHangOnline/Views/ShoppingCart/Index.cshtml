@@ -1,0 +1,76 @@
+﻿@using Microsoft.AspNet.Identity
+@using Microsoft.AspNet.Identity.EntityFramework
+@model WebBanHangOnline.Models.OrderViewModel
+
+@{
+    ViewBag.Title = "Giỏ hàng";
+}
+
+<!-- Your existing view content here -->
+<div style="margin:20px 120px 20px 110px;">
+    <h1 style="text-align: center; color: rgb(237, 143, 100); text-transform: uppercase; font-weight: bold; margin-bottom:20px; ">
+        Giỏ Hàng
+    </h1>
+
+    <div id="load_data">
+        @Html.Partial("Partial_Item_Cart")
+    </div>
+
+    <div id="messageDiv"></div> <!-- Thêm div để hiển thị thông báo từ Ajax -->
+
+    <div>
+        @using (Html.BeginForm("CheckOut", "ShoppingCart"))
+        {
+            @Html.AntiForgeryToken()
+            <div class="text-right">
+                <button id="btnCheckOut" class="btn btn-primary" style="margin-right: 80px;">Thanh toán</button>
+            </div>
+        }
+    </div>
+
+    @section scripts {
+        <script>
+        $(document).ready(function () {
+            LoadCart();
+
+            var currentUserId = '@User.Identity.GetUserId()'; // Lấy ID của người dùng hiện tại từ dữ liệu đã đăng nhập
+
+            $('body').on('click', '#btnCheckOut', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("CheckOut", "ShoppingCart")',
+                    type: 'POST',
+                    data: {
+                        id: currentUserId, // Sử dụng ID của người dùng hiện tại
+                    },
+                    success: function (rs) {
+                        if (rs.Success) {
+                            // Thanh toán thành công, hiển thị thông báo thành công
+                            alert(rs.Message);
+                            LoadCart(); // Refresh giỏ hàng sau khi đặt hàng thành công
+                        } else {
+                            // Thanh toán thất bại, hiển thị thông báo lỗi
+                            alert(rs.Message);
+                        }
+                    },
+                    error: function () {
+                        alert("Có lỗi xảy ra khi gửi yêu cầu thanh toán.");
+                    }
+                });
+            });
+
+            function LoadCart() {
+                $.ajax({
+                    url: '@Url.Action("Partial_Item_Cart", "ShoppingCart")',
+                    type: 'GET',
+                    success: function (rs) {
+                        $('#load_data').html(rs);
+                    }
+                });
+            }
+        });
+        </script>
+    }
+
+
+</div>

@@ -1,0 +1,44 @@
+﻿@using WebBanHangOnline.Models
+@model WebBanHangOnline.Models.OrderViewModel
+@using (Ajax.BeginForm("CheckOut", "Shoppingcart", new AjaxOptions
+{
+    HttpMethod = "POST",
+    UpdateTargetId = "load_data",
+    OnComplete="OnSuccessCO",
+    OnFailure="Ònailure"
+
+}, new { @Id = "myForm" }))
+{
+    @Html.AntiForgeryToken()
+    <h3>Thông tin khách hàng</h3>
+    <div class="form-group">
+        <label>Họ tên khách hàng</label>
+        @Html.TextBoxFor(u => u.CustomerName, new { @class = "form-control" })
+        <input type="text" name="CustomerName" required class="form-control" autocomplete="off" />
+    </div>
+    <div class="form-group">
+        <label>Số điện thoại</label>
+        @Html.TextBoxFor(u => u.Phone , new { @class = "form-control" })
+        <input type="text" name="Phone" class="form-control" autocomplete="off" />
+    </div>
+    <div class="form-group">
+        <label>Địa chỉ</label>
+        @Html.TextBoxFor(u => u.Address , new { @class = "form-control" })
+        <input type="text" name="Address" class="form-control" autocomplete="off" />
+    </div>
+    <div class="form-group">
+        <label>Email</label>
+        @Html.TextBoxFor(u => u.Email, new { @class = "form-control" })
+        <input type="text" name="Email" class="form-control" autocomplete="off" />
+    </div>
+    <div class="form-group">
+        <label>Hình thức thanh toán</label>
+        <select class="form-control" name="TypePayment">
+            <option value="1" selected>COD</option>
+            <option value="2">Chuyển khoản</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-block btn-success">Đặt hàng</button>
+    </div>
+}
